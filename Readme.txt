@@ -1,0 +1,12 @@
+🤖 Face Recognition Attendance System. A high-performance, real-time attendance system leveraging Insight Face for facial extraction and Redis as a high-speed vector/metadata store.🌟 Key Features Biometric Registration: Capture and average multiple facial embeddings for high-accuracy user profiles. Vector Similarity Search: Uses Cosine Similarity via sklearn to match real-time faces against the Redis database.Anti-Spam Logging: Intelligent check-in logic prevents duplicate logs by enforcing a 10-second cooldown per person.Asynchronous Processing: Attendance logs are queued and pushed to Redis in batches to ensure smooth video playback.🏗 System ArchitectureThe system follows a modular pipeline for processing:Face Analysis: InsightFace (buffalo_sc) detects faces and extracts 512-dimensional embeddings.Storage: Embeddings are serialized into bytes and stored in a Redis Hash (academy:register).Recognition: Real-time frames are compared against stored vectors using:$$\text{similarity} = \frac{A \cdot B}{\|A\| \|B\|}$$Logging: Matches exceeding the threshold ($0.5$) are logged to a Redis List (attendance:logs).🛠 Installation & Setup1. PrerequisitesPython 3.8 or higherA running Redis instance (Cloud or Local)Webcam access2. Environment ConfigurationCreate a .env file in the root directory:Code snippetREDIS_HOST='your-redis-endpoint'
+REDIS_PORT=6379
+REDIS_PASSWORD='your-password'
+3. Quick StartBash# Clone the repo
+git clone https://github.com/yourusername/face-recognition-attendance-system.git
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Launch the Dashboard
+streamlit run Home.py
+📂 Logic Deep Dive: face_rec.pyThe core engine handles several critical tasks:retrive_data(): Fetches binary facial data from Redis and reconstructs the Feature Matrix using numpy.ml_search_algorithm(): Performs the vector search. It utilizes a mask-based approach to find the highest similarity match above the user-defined threshold.RealTimePred Class: Manages the OpenCV frame annotations and ensures attendance is logged only when a "New" detection event occurs.🚀 Future Roadmap[ ] GPU Acceleration: Switch from CPUExecutionProvider to CUDAExecutionProvider for 60+ FPS.[ ] Liveness Detection: Add spoofing protection to prevent "photo-of-a-photo" attendance fraud.[ ] Auto-Export: Scheduled CSV/Excel exports to Email or S3 buckets.
